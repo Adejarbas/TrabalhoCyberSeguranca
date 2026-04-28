@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Documentação - Sistema Cifra de César</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 30px; color: #222; line-height: 1.7; }
+  h1 { color: #0077b6; border-bottom: 3px solid #0077b6; padding-bottom: 10px; }
+  h2 { color: #023e8a; margin-top: 35px; border-left: 4px solid #0077b6; padding-left: 12px; }
+  h3 { color: #0096c7; margin-top: 20px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  pre { background: #1a1a2e; color: #e0e0e0; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.85em; line-height: 1.5; }
+  pre .comment { color: #6a9955; }
+  .info-box { background: #e8f4fd; border-left: 4px solid #0077b6; padding: 12px 16px; margin: 15px 0; border-radius: 4px; }
+  .warn-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 15px 0; border-radius: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+  th, td { border: 1px solid #ddd; padding: 10px 12px; text-align: left; }
+  th { background: #0077b6; color: white; }
+  tr:nth-child(even) { background: #f8f9fa; }
+  .page-break { page-break-before: always; }
+  .header-info { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+  .header-info p { margin: 5px 0; }
+  ul { margin: 8px 0; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<h1>📄 Documentação do Projeto: Sistema de Cifra de César</h1>
+
+<div class="header-info">
+  <p><strong>Disciplina:</strong> Cibersegurança</p>
+  <p><strong>Tecnologias:</strong> React + Vite (Frontend) | Node.js + Express (Backend) | SQLite (Banco de Dados)</p>
+  <p><strong>Autenticação:</strong> JWT (JSON Web Token)</p>
+  <p><strong>Data:</strong> Abril/2026</p>
+</div>
+
+<h2>1. Visão Geral do Projeto</h2>
+<p>O sistema implementa a <strong>Cifra de César</strong>, uma das técnicas de criptografia mais antigas, onde cada caractere é deslocado por um número fixo de posições no alfabeto. O projeto possui:</p>
+<ul>
+  <li><strong>4 telas:</strong> Login, Cadastro, Criptografar e Descriptografar</li>
+  <li><strong>Autenticação JWT</strong> para proteger as rotas</li>
+  <li><strong>Hash de uso único</strong> como chave privada para descriptografia</li>
+  <li><strong>Banco de dados SQLite</strong> para persistência</li>
+</ul>
+
+<h2>2. Estrutura de Pastas</h2>
+<pre>
+trabalhoCyberSeguranca/
+├── server/                        <span class="comment">// Backend (API)</span>
+│   ├── index.cjs                  <span class="comment">// Servidor Express principal</span>
+│   ├── database.cjs               <span class="comment">// Configuração do SQLite</span>
+│   ├── middleware/
+│   │   └── auth.cjs               <span class="comment">// Middleware JWT</span>
+│   └── routes/
+│       ├── auth.cjs               <span class="comment">// Rotas de login/cadastro</span>
+│       └── crypto.cjs             <span class="comment">// Rotas de criptografia</span>
+├── src/                           <span class="comment">// Frontend (React)</span>
+│   ├── App.jsx                    <span class="comment">// Componente principal + rotas</span>
+│   ├── App.css                    <span class="comment">// Estilos da aplicação</span>
+│   ├── context/
+│   │   └── AuthContext.jsx        <span class="comment">// Gerenciamento de autenticação</span>
+│   ├── components/
+│   │   └── Navbar.jsx             <span class="comment">// Barra de navegação</span>
+│   └── pages/
+│       ├── Login.jsx              <span class="comment">// Tela de login</span>
+│       ├── Cadastro.jsx           <span class="comment">// Tela de cadastro</span>
+│       ├── Criptografar.jsx       <span class="comment">// Tela de criptografia</span>
+│       └── Descriptografar.jsx    <span class="comment">// Tela de descriptografia</span>
+└── package.json
+</pre>
+
+<h2>3. Banco de Dados (SQLite)</h2>
+<p>O banco possui <strong>duas tabelas</strong>:</p>
+
+<h3>3.1. Tabela <code>usuarios</code></h3>
+<table>
+  <tr><th>Coluna</th><th>Tipo</th><th>Descrição</th></tr>
+  <tr><td>id</td><td>INTEGER (PK)</td><td>Identificador único auto-incremento</td></tr>
+  <tr><td>usuario</td><td>TEXT (UNIQUE)</td><td>Nome do usuário</td></tr>
+  <tr><td>senha</td><td>TEXT</td><td>Senha criptografada com bcrypt</td></tr>
+  <tr><td>criado_em</td><td>DATETIME</td><td>Data de criação</td></tr>
+</table>
+
+<h3>3.2. Tabela <code>mensagens</code></h3>
+<table>
+  <tr><th>Coluna</th><th>Tipo</th><th>Descrição</th></tr>
+  <tr><td>id</td><td>INTEGER (PK)</td><td>Identificador único</td></tr>
+  <tr><td>usuario_id</td><td>INTEGER (FK)</td><td>Referência ao usuário</td></tr>
+  <tr><td>hash_chave</td><td>TEXT (UNIQUE)</td><td>Hash que serve como chave privada</td></tr>
+  <tr><td>passo</td><td>INTEGER</td><td>Número de casas deslocadas</td></tr>
+  <tr><td>mensagem_criptografada</td><td>TEXT</td><td>Mensagem após a cifra</td></tr>
+  <tr><td>usado</td><td>INTEGER</td><td>0 = não usado, 1 = já usado</td></tr>
+  <tr><td>criado_em</td><td>DATETIME</td><td>Data de criação</td></tr>
+</table>
+
+<p><strong>Trecho do código</strong> (<code>server/database.cjs</code>):</p>
+<pre>
+<span class="comment">// Cria a tabela de mensagens criptografadas</span>
+<span class="comment">// A coluna "usado" controla se o hash já foi utilizado (0=não, 1=sim)</span>
+db.exec(`
+  CREATE TABLE IF NOT EXISTS mensagens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL,
+    hash_chave TEXT UNIQUE NOT NULL,
+    passo INTEGER NOT NULL,
+    mensagem_criptografada TEXT NOT NULL,
+    usado INTEGER DEFAULT 0,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+  )
+`);
+</pre>
+<div class="info-box">
+  <strong>Por que SQLite?</strong> É um banco de dados leve que não precisa de instalação de servidor separado. O banco é salvo em um único arquivo (<code>database.sqlite</code>), ideal para projetos acadêmicos.
+</div>
+
+<div class="page-break"></div>
+
+<h2>4. Autenticação com JWT</h2>
+<p>O JWT (JSON Web Token) é usado para garantir três pilares de segurança:</p>
+<ul>
+  <li><strong>Autenticidade:</strong> Somente o servidor pode gerar tokens válidos</li>
+  <li><strong>Integridade:</strong> O token não pode ser alterado sem ser invalidado</li>
+  <li><strong>Confidencialidade:</strong> Os dados do usuário ficam protegidos no token</li>
+</ul>
+
+<h3>4.1. Como funciona o fluxo</h3>
+<ol>
+  <li>Usuário faz login com usuário e senha</li>
+  <li>Servidor valida a senha com bcrypt e gera um token JWT (válido por 2 horas)</li>
+  <li>Frontend armazena o token no <code>localStorage</code></li>
+  <li>Em cada requisição protegida, o token é enviado no header <code>Authorization</code></li>
+  <li>O middleware <code>verificarToken</code> valida o token antes de processar a requisição</li>
+</ol>
+
+<p><strong>Trecho do código - Middleware JWT</strong> (<code>server/middleware/auth.cjs</code>):</p>
+<pre>
+<span class="comment">// Middleware que verifica se o usuário está autenticado</span>
+function verificarToken(req, res, next) {
+  <span class="comment">// Pega o token do cabeçalho Authorization (formato: "Bearer &lt;token&gt;")</span>
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ erro: 'Token não fornecido.' });
+  }
+
+  try {
+    <span class="comment">// Verifica se o token é válido e não expirou</span>
+    const decoded = jwt.verify(token, SEGREDO_JWT);
+    req.usuario = decoded;
+    next();
+  } catch (err) {
+    return res.status(403).json({ erro: 'Token inválido ou expirado.' });
+  }
+}
+</pre>
+
+<h3>4.2. Geração do Token no Login</h3>
+<pre>
+<span class="comment">// Compara a senha digitada com o hash armazenado</span>
+const senhaValida = bcrypt.compareSync(senha, user.senha);
+
+<span class="comment">// Gera o token JWT com validade de 2 horas</span>
+const token = jwt.sign(
+  { id: user.id, usuario: user.usuario },
+  SEGREDO_JWT,
+  { expiresIn: '2h' }
+);
+</pre>
+
+<h3>4.3. Senha protegida com Bcrypt</h3>
+<p>As senhas <strong>nunca são armazenadas em texto puro</strong>. Usamos o bcrypt para gerar um hash seguro:</p>
+<pre>
+<span class="comment">// Criptografa a senha usando bcrypt (hash de 10 rounds)</span>
+const senhaHash = bcrypt.hashSync(senha, 10);
+</pre>
+
+<div class="page-break"></div>
+
+<h2>5. Cifra de César - Implementação</h2>
+<p>A Cifra de César desloca cada caractere do texto por um número fixo de posições. O nosso alfabeto inclui <strong>letras (a-z) e números (0-9)</strong>, totalizando 36 caracteres.</p>
+
+<h3>5.1. Exemplo Visual</h3>
+<table>
+  <tr><th>Original</th><th>Passo +3</th><th>Resultado</th></tr>
+  <tr><td>a</td><td>a → b → c → <strong>d</strong></td><td>d</td></tr>
+  <tr><td>h</td><td>h → i → j → <strong>k</strong></td><td>k</td></tr>
+  <tr><td>1</td><td>1 → 2 → 3 → <strong>4</strong></td><td>4</td></tr>
+  <tr><td>z</td><td>z → 0 → 1 → <strong>2</strong></td><td>2 (volta ao início)</td></tr>
+</table>
+
+<p><strong>Trecho do código</strong> (<code>server/routes/crypto.cjs</code>):</p>
+<pre>
+<span class="comment">// Alfabeto: letras minúsculas + números (a-z, 0-9)</span>
+const ALFABETO = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+<span class="comment">// Função que aplica a Cifra de César</span>
+function cifrarCesar(texto, passo) {
+  let resultado = '';
+
+  for (let i = 0; i &lt; texto.length; i++) {
+    const char = texto[i].toLowerCase();
+    const indice = ALFABETO.indexOf(char);
+
+    if (indice !== -1) {
+      <span class="comment">// Calcula nova posição com deslocamento circular</span>
+      let novoIndice = (indice + passo) % ALFABETO.length;
+      if (novoIndice &lt; 0) novoIndice += ALFABETO.length;
+      resultado += ALFABETO[novoIndice];
+    } else {
+      <span class="comment">// Mantém caracteres fora do alfabeto (espaços, etc.)</span>
+      resultado += char;
+    }
+  }
+  return resultado;
+}
+
+<span class="comment">// Para descriptografar, basta inverter o passo</span>
+function decifrarCesar(texto, passo) {
+  return cifrarCesar(texto, -passo);
+}
+</pre>
+
+<div class="info-box">
+  <strong>Por que deslocamento circular?</strong> Usamos o operador <code>%</code> (módulo) para que quando o deslocamento ultrapasse o fim do alfabeto, ele "volte ao início". Ex: com passo 3, a letra "z" (posição 25) vai para "2" (posição 28 % 36 = 28, que corresponde ao "2").
+</div>
+
+<div class="page-break"></div>
+
+<h2>6. Sistema de Hash (Chave Privada)</h2>
+<p>Ao criptografar uma mensagem, o sistema gera um <strong>hash aleatório de 32 caracteres</strong> que funciona como chave privada. Esse hash é de <strong>uso único</strong>.</p>
+
+<h3>6.1. Fluxo de Criptografia</h3>
+<ol>
+  <li>Usuário digita mensagem e passo</li>
+  <li>Backend aplica a Cifra de César</li>
+  <li>Backend gera um hash aleatório com <code>crypto.randomBytes</code></li>
+  <li>Hash, passo e mensagem criptografada são salvos no banco com <code>usado = 0</code></li>
+  <li>Hash é exibido ao usuário como chave privada</li>
+</ol>
+
+<pre>
+<span class="comment">// Gera hash aleatório de 32 caracteres hexadecimais</span>
+function gerarHash() {
+  return crypto.randomBytes(16).toString('hex');
+}
+
+<span class="comment">// Salva no banco: hash, passo e mensagem criptografada</span>
+const stmt = db.prepare(
+  'INSERT INTO mensagens (usuario_id, hash_chave, passo, mensagem_criptografada, usado) VALUES (?, ?, ?, ?, 0)'
+);
+stmt.run(req.usuario.id, hashChave, passoNumero, mensagemCriptografada);
+</pre>
+
+<h3>6.2. Fluxo de Descriptografia (Hash de uso único)</h3>
+<ol>
+  <li>Usuário informa a mensagem criptografada e o hash</li>
+  <li>Sistema busca o hash no banco</li>
+  <li>Verifica se o hash <strong>existe</strong> e se <strong>não foi usado</strong></li>
+  <li>Se válido: descriptografa e marca <code>usado = 1</code></li>
+  <li>Se inválido ou já usado: retorna mensagem de erro</li>
+</ol>
+
+<pre>
+<span class="comment">// Busca o hash no banco de dados</span>
+const registro = db.prepare('SELECT * FROM mensagens WHERE hash_chave = ?').get(hashChave);
+
+<span class="comment">// Verifica se o hash já foi usado</span>
+if (registro.usado) {
+  return res.status(400).json({
+    erro: 'Este hash já foi utilizado! Cada hash só pode ser usado uma única vez.'
+  });
+}
+
+<span class="comment">// Descriptografa e marca como usado</span>
+const mensagemOriginal = decifrarCesar(mensagemCriptografada, registro.passo);
+db.prepare('UPDATE mensagens SET usado = 1 WHERE hash_chave = ?').run(hashChave);
+</pre>
+
+<div class="warn-box">
+  <strong>Segurança:</strong> Cada hash só pode ser usado UMA vez. Após a descriptografia, ele é marcado como <code>usado = 1</code> no banco de dados, impedindo reutilização.
+</div>
+
+<div class="page-break"></div>
+
+<h2>7. Frontend (React + Vite)</h2>
+
+<h3>7.1. Rotas Protegidas</h3>
+<p>As telas de Criptografar e Descriptografar só podem ser acessadas por usuários logados:</p>
+<pre>
+<span class="comment">// Componente que protege rotas</span>
+function RotaProtegida({ children }) {
+  const { token } = useAuth();
+  <span class="comment">// Se não tem token, redireciona para o login</span>
+  return token ? children : &lt;Navigate to="/login" /&gt;;
+}
+
+<span class="comment">// Uso nas rotas:</span>
+&lt;Route path="/criptografar" element={
+  &lt;RotaProtegida&gt;&lt;Criptografar /&gt;&lt;/RotaProtegida&gt;
+} /&gt;
+</pre>
+
+<h3>7.2. Contexto de Autenticação</h3>
+<p>O estado de login é gerenciado globalmente usando React Context API:</p>
+<pre>
+<span class="comment">// Salva token no localStorage para manter login ao recarregar</span>
+const login = (novoToken, nomeUsuario) => {
+  localStorage.setItem('token', novoToken);
+  localStorage.setItem('usuario', nomeUsuario);
+  setToken(novoToken);
+  setUsuario(nomeUsuario);
+};
+</pre>
+
+<h3>7.3. Comunicação com a API</h3>
+<p>O frontend envia o token JWT em todas as requisições autenticadas:</p>
+<pre>
+const resposta = await fetch('http://localhost:3001/api/criptografar', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}` <span class="comment">// Token JWT</span>
+  },
+  body: JSON.stringify({ mensagem, passo: parseInt(passo) })
+});
+</pre>
+
+<h2>8. Tecnologias Utilizadas</h2>
+<table>
+  <tr><th>Tecnologia</th><th>Função</th></tr>
+  <tr><td>React</td><td>Biblioteca para construção da interface (frontend)</td></tr>
+  <tr><td>Vite</td><td>Ferramenta de build rápida para desenvolvimento</td></tr>
+  <tr><td>Node.js + Express</td><td>Servidor backend para a API REST</td></tr>
+  <tr><td>SQLite (better-sqlite3)</td><td>Banco de dados leve para persistência</td></tr>
+  <tr><td>JWT (jsonwebtoken)</td><td>Autenticação por tokens</td></tr>
+  <tr><td>Bcrypt (bcryptjs)</td><td>Hash seguro de senhas</td></tr>
+  <tr><td>React Router DOM</td><td>Navegação entre páginas no frontend</td></tr>
+</table>
+
+<h2>9. Como Executar o Projeto</h2>
+<ol>
+  <li>Instalar dependências: <code>npm install</code></li>
+  <li>Iniciar frontend + backend: <code>npm run dev</code></li>
+  <li>Acessar no navegador: <code>http://localhost:5173</code></li>
+</ol>
+
+<h2>10. Rotas da API</h2>
+<table>
+  <tr><th>Método</th><th>Rota</th><th>Descrição</th><th>Auth?</th></tr>
+  <tr><td>POST</td><td>/api/auth/cadastro</td><td>Cadastrar novo usuário</td><td>Não</td></tr>
+  <tr><td>POST</td><td>/api/auth/login</td><td>Fazer login e receber JWT</td><td>Não</td></tr>
+  <tr><td>POST</td><td>/api/criptografar</td><td>Criptografar mensagem</td><td>Sim (JWT)</td></tr>
+  <tr><td>POST</td><td>/api/descriptografar</td><td>Descriptografar mensagem</td><td>Sim (JWT)</td></tr>
+</table>
+
+</body>
+</html>
