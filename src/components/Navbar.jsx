@@ -12,7 +12,7 @@ function Navbar() {
     <nav className="navbar">
       {/* Logo do sistema */}
       <div className="navbar-logo">
-        🔒 CifraCesar
+        CifraCesar
       </div>
 
       <div className="navbar-links">
@@ -23,13 +23,13 @@ function Navbar() {
               to="/criptografar"
               className={location.pathname === '/criptografar' ? 'active' : ''}
             >
-              🔐 Criptografar
+              Criptografar
             </Link>
             <Link
               to="/descriptografar"
               className={location.pathname === '/descriptografar' ? 'active' : ''}
             >
-              🔓 Descriptografar
+              Descriptografar
             </Link>
             <span className="usuario-info">Olá, {usuario}</span>
             <button className="btn-logout" onClick={logout}>

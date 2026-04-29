@@ -45,7 +45,6 @@ function Login() {
 
   return (
     <div className="card">
-      <div className="icone-pagina">🔐</div>
       <h2>Login</h2>
       <p className="card-subtitulo">Acesse o sistema de criptografia</p>
 

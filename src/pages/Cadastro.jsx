@@ -60,7 +60,6 @@ function Cadastro() {
 
   return (
     <div className="card">
-      <div className="icone-pagina">📝</div>
       <h2>Cadastro</h2>
       <p className="card-subtitulo">Crie sua conta no sistema</p>
 

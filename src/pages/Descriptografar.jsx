@@ -47,7 +47,6 @@ function Descriptografar() {
 
   return (
     <div className="card card-largo">
-      <div className="icone-pagina">🔓</div>
       <h2>Descriptografar</h2>
       <p className="card-subtitulo">Cifra de César - Recuperar mensagem original</p>
 
@@ -81,14 +80,14 @@ function Descriptografar() {
         </div>
 
         <button type="submit" className="btn-principal" disabled={carregando}>
-          {carregando ? 'Descriptografando...' : '🔓 Descriptografar'}
+          {carregando ? 'Descriptografando...' : 'Descriptografar'}
         </button>
       </form>
 
       {/* Exibe o resultado após descriptografar */}
       {resultado && (
         <div className="resultado-box">
-          <h3>✅ Mensagem Descriptografada</h3>
+          <h3>Mensagem Descriptografada</h3>
 
           <div className="resultado-item">
             <label>Mensagem Original:</label>
@@ -96,7 +95,7 @@ function Descriptografar() {
           </div>
 
           <div className="aviso">
-            ⚠️ {resultado.aviso}
+            Aviso: {resultado.aviso}
           </div>
         </div>
       )}

@@ -47,7 +47,6 @@ function Criptografar() {
 
   return (
     <div className="card card-largo">
-      <div className="icone-pagina">🔐</div>
       <h2>Criptografar</h2>
       <p className="card-subtitulo">Cifra de César - Criptografar mensagem</p>
 
@@ -83,14 +82,14 @@ function Criptografar() {
         </div>
 
         <button type="submit" className="btn-principal" disabled={carregando}>
-          {carregando ? 'Criptografando...' : '🔒 Criptografar'}
+          {carregando ? 'Criptografando...' : 'Criptografar'}
         </button>
       </form>
 
       {/* Exibe o resultado após criptografar */}
       {resultado && (
         <div className="resultado-box">
-          <h3>✅ Resultado da Criptografia</h3>
+          <h3>Resultado da Criptografia</h3>
 
           <div className="resultado-item">
             <label>Mensagem Criptografada:</label>
@@ -103,7 +102,7 @@ function Criptografar() {
           </div>
 
           <div className="aviso">
-            ⚠️ {resultado.aviso}
+            Aviso: {resultado.aviso}
           </div>
         </div>
       )}
