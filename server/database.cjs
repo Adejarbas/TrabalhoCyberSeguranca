@@ -7,8 +7,7 @@ const path = require('path');
 // Cria (ou abre) o arquivo do banco de dados SQLite
 const db = new Database(path.join(__dirname, 'database.sqlite'));
 
-// Ativa o modo WAL para melhor performance em leituras/escritas
-db.pragma('journal_mode = WAL');
+
 
 // Cria a tabela de usuários (se não existir)
 db.exec(`
